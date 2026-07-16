@@ -1,0 +1,139 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    -webkit-tap-highlight-color: transparent;
+    box-sizing: border-box;
+  }
+
+  html, body, #root {
+    height: 100%;
+    overflow: hidden;
+    overscroll-behavior: none; /* 端でのゴムのような揺れを防止 */
+  }
+
+  #root {
+    touch-action: pan-y; /* 基本は縦スクロールのみ */
+  }
+
+  /* 縦スクロール領域は横方向のはみ出しを遮断 */
+  .overflow-y-auto {
+    overflow-x: hidden;
+    overscroll-behavior-y: contain;
+  }
+
+  /* 横スクロールが必要な部品（タイムライン・チップ等）だけ横パンを許可 */
+  .overflow-x-auto {
+    touch-action: pan-x;
+    overscroll-behavior-x: contain;
+  }
+
+  body {
+    background-color: #F7F3EC;
+    font-family: 'Noto Sans JP', 'Inter', system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    color: #1a1a1a;
+  }
+}
+
+@layer utilities {
+  .safe-bottom {
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  .safe-top {
+    padding-top: env(safe-area-inset-top, 0px);
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+}
+
+/* ===== カード出現アニメーション ===== */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.anim-fade-up { animation: fadeUp 0.35s ease-out both; }
+.anim-d1 { animation-delay: 0.05s; }
+.anim-d2 { animation-delay: 0.1s; }
+.anim-d3 { animation-delay: 0.15s; }
+
+@media (prefers-reduced-motion: reduce) {
+  .anim-fade-up { animation: none; }
+}
+
+/* ===== ダークモード（後付けオーバーライド方式） =====
+   和のダークパレット: 墨色ベース + 若竹アクセントを維持 */
+.dark body { background-color: #191D1B; color: #E5E5E0; }
+
+.dark .bg-bg-base       { background-color: #191D1B; }
+.dark .bg-white         { background-color: #242926; }
+.dark .bg-white\/70,
+.dark .bg-white\/80,
+.dark .bg-white\/85,
+.dark .bg-white\/90,
+.dark .bg-white\/95     { background-color: rgba(36, 41, 38, 0.9); }
+.dark .bg-gray-50       { background-color: #2C332F; }
+.dark .bg-gray-100      { background-color: #333B36; }
+.dark .bg-green-50      { background-color: #24332A; }
+.dark .bg-green-100     { background-color: #2C4034; }
+.dark .bg-amber-50      { background-color: #362E1E; }
+.dark .bg-amber-100     { background-color: #423722; }
+.dark .bg-yellow-50     { background-color: #363218; }
+.dark .bg-red-50        { background-color: #3A2626; }
+.dark .bg-blue-50       { background-color: #223038; }
+.dark .bg-purple-50     { background-color: #2E2838; }
+
+.dark .text-gray-900,
+.dark .text-gray-800    { color: #ECECE7; }
+.dark .text-gray-700    { color: #D6D6D0; }
+.dark .text-gray-600    { color: #BDBDB6; }
+.dark .text-gray-500    { color: #9C9C95; }
+.dark .text-gray-400    { color: #83837C; }
+.dark .text-gray-300    { color: #5F5F58; }
+
+.dark .border-gray-50   { border-color: #2E3531; }
+.dark .border-gray-100  { border-color: #333B36; }
+.dark .border-gray-200  { border-color: #3D453F; }
+.dark .border-white,
+.dark .border-white\/80 { border-color: #333B36; }
+.dark .border-green-100 { border-color: #35493C; }
+.dark .border-amber-100 { border-color: #4A3E24; }
+.dark .border-blue-100  { border-color: #2C3E48; }
+.dark .border-red-100   { border-color: #4A3030; }
+
+.dark .shadow-soft,
+.dark .shadow-card,
+.dark .shadow-sm        { box-shadow: 0 2px 12px rgba(0,0,0,0.4); }
+
+/* グラデーションヘッダー */
+.dark .from-\[\#EEF5EF\] { --tw-gradient-from: #1F2622 var(--tw-gradient-from-position); --tw-gradient-to: rgb(31 38 34 / 0); --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to); }
+.dark .to-\[\#F7F3EC\]   { --tw-gradient-to: #191D1B var(--tw-gradient-to-position); }
+
+/* ===== 横揺れ防止（縦スクロール固定） =====
+   スマホでの横方向のパン・ゴムバンド挙動を止める。
+   横スクロールが必要な要素（タイムライン・チップ等）だけ pan-x を許可 */
+html, body {
+  overscroll-behavior: none;
+  touch-action: pan-y;
+  max-width: 100vw;
+}
+#root {
+  overflow-x: hidden;
+}
+/* 縦スクロール領域は横方向のはみ出しを遮断 */
+.overflow-y-auto {
+  overflow-x: hidden;
+  overscroll-behavior-y: contain;
+}
+/* 横スクロール領域（成長タイムライン・カテゴリチップ・週間予報）は横のみ許可 */
+.overflow-x-auto {
+  touch-action: pan-x;
+  overscroll-behavior-x: contain;
+}
